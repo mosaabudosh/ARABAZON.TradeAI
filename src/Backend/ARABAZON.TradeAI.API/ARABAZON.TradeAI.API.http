@@ -1,0 +1,6 @@
+@ARABAZON.TradeAI.API_HostAddress = http://localhost:5023
+
+GET {{ARABAZON.TradeAI.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

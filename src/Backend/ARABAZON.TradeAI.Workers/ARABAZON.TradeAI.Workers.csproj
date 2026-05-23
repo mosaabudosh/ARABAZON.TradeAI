@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-ARABAZON.TradeAI.Workers-95a971ac-c41c-4d5d-8b33-a944356721f4</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ARABAZON.TradeAI.Application\ARABAZON.TradeAI.Application.csproj" />
+    <ProjectReference Include="..\ARABAZON.TradeAI.Infrastructure\ARABAZON.TradeAI.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>
