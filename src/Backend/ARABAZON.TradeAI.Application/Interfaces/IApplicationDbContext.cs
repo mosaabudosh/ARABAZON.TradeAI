@@ -11,6 +11,8 @@ public interface IApplicationDbContext
     DbSet<TradeSignal> TradeSignals { get; }
     DbSet<Trade> Trades { get; }
     DbSet<RiskConfiguration> RiskConfigurations { get; }
+    DbSet<MarketSnapshot> MarketSnapshots { get; }
+    DbSet<Indicator> Indicators { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

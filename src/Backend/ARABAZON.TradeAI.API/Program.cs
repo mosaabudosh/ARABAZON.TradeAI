@@ -1,7 +1,10 @@
+using ARABAZON.TradeAI.API.Hubs;
 using ARABAZON.TradeAI.Application;
+using ARABAZON.TradeAI.Application.Interfaces;
 using ARABAZON.TradeAI.Infrastructure;
 using ARABAZON.TradeAI.Persistence;
 using ARABAZON.TradeAI.Persistence.Context;
+using ARABAZON.TradeAI.Workers;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -27,8 +30,19 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddSignalR();
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
-//builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration); 
+builder.Services.AddPersistence(builder.Configuration);
+
+// Register SignalR Hub Notifier
+builder.Services.AddScoped<IMarketHubNotifier, MarketHubNotifier>();
+// SignalR notifiers
+builder.Services.AddScoped<IMarketHubNotifier, MarketHubNotifier>();
+builder.Services.AddScoped<ISignalHubNotifier, SignalHubNotifier>();
+
+// Register Workers
+builder.Services.AddHostedService<MarketDataWorker>();
+builder.Services.AddHostedService<MarketDataWorker>();
+builder.Services.AddHostedService<SignalScannerWorker>();
 
 builder.Services.AddCors(options =>
 {
@@ -42,11 +56,21 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Auto migrate on startup
+// Seed symbols
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
-    Log.Information("Database migration applied successfully.");
+
+    if (!db.Symbols.Any())
+    {
+        db.Symbols.AddRange(
+            ARABAZON.TradeAI.Domain.Entities.Symbol.Create("XAUUSD", "Gold", ARABAZON.TradeAI.Domain.Enums.MarketType.Commodity, 0.01m, 100m),
+            ARABAZON.TradeAI.Domain.Entities.Symbol.Create("USOIL", "Crude Oil WTI", ARABAZON.TradeAI.Domain.Enums.MarketType.Commodity, 0.01m, 1000m)
+        );
+        await db.SaveChangesAsync();
+        Log.Information("Symbols seeded.");
+    }
 }
 
 if (app.Environment.IsDevelopment())
@@ -61,7 +85,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 // SignalR Hubs (to be added)
-// app.MapHub<MarketHub>("/hubs/market");
+app.MapHub<MarketHub>("/hubs/market");
+app.MapHub<SignalHub>("/hubs/signals");
 // app.MapHub<TradeHub>("/hubs/trade");
 
 Log.Information("ARABAZON Trade AI API started.");

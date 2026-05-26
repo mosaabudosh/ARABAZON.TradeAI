@@ -15,7 +15,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<TradeSignal> TradeSignals => Set<TradeSignal>();
     public DbSet<Trade> Trades => Set<Trade>();
     public DbSet<RiskConfiguration> RiskConfigurations => Set<RiskConfiguration>();
-
+    public DbSet<MarketSnapshot> MarketSnapshots => Set<MarketSnapshot>();
+    public DbSet<Indicator> Indicators => Set<Indicator>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
