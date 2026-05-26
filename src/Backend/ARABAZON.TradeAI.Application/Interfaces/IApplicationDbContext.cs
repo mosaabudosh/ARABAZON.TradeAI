@@ -13,6 +13,11 @@ public interface IApplicationDbContext
     DbSet<RiskConfiguration> RiskConfigurations { get; }
     DbSet<MarketSnapshot> MarketSnapshots { get; }
     DbSet<Indicator> Indicators { get; }
+    DbSet<RiskEvent> RiskEvents { get; }
+    DbSet<SymbolRiskConfiguration> SymbolRiskConfigurations { get; }
+    DbSet<TradeExecution> TradeExecutions { get; }
+    DbSet<Position> Positions { get; }
+    DbSet<ExecutionAuditLog> ExecutionAuditLogs { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

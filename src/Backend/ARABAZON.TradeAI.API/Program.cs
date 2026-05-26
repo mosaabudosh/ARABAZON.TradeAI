@@ -38,11 +38,19 @@ builder.Services.AddScoped<IMarketHubNotifier, MarketHubNotifier>();
 // SignalR notifiers
 builder.Services.AddScoped<IMarketHubNotifier, MarketHubNotifier>();
 builder.Services.AddScoped<ISignalHubNotifier, SignalHubNotifier>();
-
+// Notifiers
+builder.Services.AddScoped<IMarketHubNotifier, MarketHubNotifier>();
+builder.Services.AddScoped<ISignalHubNotifier, SignalHubNotifier>();
+builder.Services.AddScoped<ITradeHubNotifier, TradeHubNotifier>();
 // Register Workers
 builder.Services.AddHostedService<MarketDataWorker>();
 builder.Services.AddHostedService<MarketDataWorker>();
 builder.Services.AddHostedService<SignalScannerWorker>();
+builder.Services.AddHostedService<RiskMonitorWorker>();
+builder.Services.AddHostedService<MarketDataWorker>();
+builder.Services.AddHostedService<SignalScannerWorker>();
+builder.Services.AddHostedService<RiskMonitorWorker>();
+builder.Services.AddHostedService<TradeMonitorWorker>();
 
 builder.Services.AddCors(options =>
 {
@@ -71,7 +79,23 @@ using (var scope = app.Services.CreateScope())
         await db.SaveChangesAsync();
         Log.Information("Symbols seeded.");
     }
+
+    // Seed SymbolRiskConfigurations
+    if (!db.SymbolRiskConfigurations.Any())
+    {
+        var gold = db.Symbols.First(s => s.SymbolCode == "XAUUSD");
+        var oil = db.Symbols.First(s => s.SymbolCode == "USOIL");
+
+        db.SymbolRiskConfigurations.AddRange(
+            ARABAZON.TradeAI.Domain.Entities.SymbolRiskConfiguration.CreateForGold(gold.Id),
+            ARABAZON.TradeAI.Domain.Entities.SymbolRiskConfiguration.CreateForOil(oil.Id)
+        );
+        await db.SaveChangesAsync();
+        Log.Information("SymbolRiskConfigurations seeded.");
+    }
 }
+
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -87,7 +111,7 @@ app.MapControllers();
 // SignalR Hubs (to be added)
 app.MapHub<MarketHub>("/hubs/market");
 app.MapHub<SignalHub>("/hubs/signals");
-// app.MapHub<TradeHub>("/hubs/trade");
+app.MapHub<TradeHub>("/hubs/trade");
 
 Log.Information("ARABAZON Trade AI API started.");
 app.Run();

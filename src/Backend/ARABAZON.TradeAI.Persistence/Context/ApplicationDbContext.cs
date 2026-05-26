@@ -17,6 +17,12 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<RiskConfiguration> RiskConfigurations => Set<RiskConfiguration>();
     public DbSet<MarketSnapshot> MarketSnapshots => Set<MarketSnapshot>();
     public DbSet<Indicator> Indicators => Set<Indicator>();
+    public DbSet<RiskEvent> RiskEvents => Set<RiskEvent>();
+    public DbSet<SymbolRiskConfiguration> SymbolRiskConfigurations => Set<SymbolRiskConfiguration>();
+    public DbSet<TradeExecution> TradeExecutions => Set<TradeExecution>();
+    public DbSet<Position> Positions => Set<Position>();
+    public DbSet<ExecutionAuditLog> ExecutionAuditLogs => Set<ExecutionAuditLog>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

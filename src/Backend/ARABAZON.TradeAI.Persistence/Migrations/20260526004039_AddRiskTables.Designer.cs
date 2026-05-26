@@ -3,6 +3,7 @@ using System;
 using ARABAZON.TradeAI.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ARABAZON.TradeAI.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260526004039_AddRiskTables")]
+    partial class AddRiskTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,71 +59,6 @@ namespace ARABAZON.TradeAI.Persistence.Migrations
                     b.HasIndex("SymbolId", "Timeframe", "OpenTime");
 
                     b.ToTable("Candles");
-                });
-
-            modelBuilder.Entity("ARABAZON.TradeAI.Domain.Entities.ExecutionAuditLog", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("BrokerTicket")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("CorrelationId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ErrorMessage")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<decimal?>("ExecutedPrice")
-                        .HasPrecision(18, 5)
-                        .HasColumnType("numeric(18,5)");
-
-                    b.Property<string>("ExecutionAction")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("ExecutionStatus")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("RequestId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<decimal?>("RequestedPrice")
-                        .HasPrecision(18, 5)
-                        .HasColumnType("numeric(18,5)");
-
-                    b.Property<decimal?>("Slippage")
-                        .HasPrecision(18, 5)
-                        .HasColumnType("numeric(18,5)");
-
-                    b.Property<Guid?>("TradeId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CorrelationId");
-
-                    b.HasIndex("CreatedAt");
-
-                    b.HasIndex("RequestId");
-
-                    b.HasIndex("TradeId");
-
-                    b.ToTable("ExecutionAuditLogs");
                 });
 
             modelBuilder.Entity("ARABAZON.TradeAI.Domain.Entities.Indicator", b =>
@@ -187,30 +125,6 @@ namespace ARABAZON.TradeAI.Persistence.Migrations
                     b.HasIndex("SymbolId", "SnapshotTime");
 
                     b.ToTable("MarketSnapshots");
-                });
-
-            modelBuilder.Entity("ARABAZON.TradeAI.Domain.Entities.Position", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Exposure")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("numeric(18,4)");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("TradeId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TradeId")
-                        .IsUnique();
-
-                    b.ToTable("Positions");
                 });
 
             modelBuilder.Entity("ARABAZON.TradeAI.Domain.Entities.RiskConfiguration", b =>
@@ -436,58 +350,6 @@ namespace ARABAZON.TradeAI.Persistence.Migrations
                     b.ToTable("Trades");
                 });
 
-            modelBuilder.Entity("ARABAZON.TradeAI.Domain.Entities.TradeExecution", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("BrokerTicket")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("CorrelationId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("ErrorMessage")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<DateTime>("ExecutedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ExecutionType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("RequestId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<decimal>("Slippage")
-                        .HasPrecision(18, 5)
-                        .HasColumnType("numeric(18,5)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("TradeId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RequestId");
-
-                    b.HasIndex("TradeId");
-
-                    b.ToTable("TradeExecutions");
-                });
-
             modelBuilder.Entity("ARABAZON.TradeAI.Domain.Entities.TradeSignal", b =>
                 {
                     b.Property<Guid>("Id")
@@ -618,57 +480,6 @@ namespace ARABAZON.TradeAI.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ARABAZON.TradeAI.Domain.Entities.Position", b =>
-                {
-                    b.OwnsOne("ARABAZON.TradeAI.Domain.ValueObjects.Price", "CurrentPrice", b1 =>
-                        {
-                            b1.Property<Guid>("PositionId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<decimal>("Value")
-                                .HasPrecision(18, 5)
-                                .HasColumnType("numeric(18,5)")
-                                .HasColumnName("CurrentPrice");
-
-                            b1.HasKey("PositionId");
-
-                            b1.ToTable("Positions");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PositionId");
-                        });
-
-                    b.OwnsOne("ARABAZON.TradeAI.Domain.ValueObjects.Money", "UnrealizedPnL", b1 =>
-                        {
-                            b1.Property<Guid>("PositionId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<decimal>("Amount")
-                                .HasPrecision(18, 2)
-                                .HasColumnType("numeric(18,2)")
-                                .HasColumnName("UnrealizedPnLAmount");
-
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("character varying(3)")
-                                .HasColumnName("UnrealizedPnLCurrency");
-
-                            b1.HasKey("PositionId");
-
-                            b1.ToTable("Positions");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PositionId");
-                        });
-
-                    b.Navigation("CurrentPrice")
-                        .IsRequired();
-
-                    b.Navigation("UnrealizedPnL")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ARABAZON.TradeAI.Domain.Entities.Trade", b =>
                 {
                     b.OwnsOne("ARABAZON.TradeAI.Domain.ValueObjects.Price", "EntryPrice", b1 =>
@@ -698,30 +509,6 @@ namespace ARABAZON.TradeAI.Persistence.Migrations
                                 .HasPrecision(18, 5)
                                 .HasColumnType("numeric(18,5)")
                                 .HasColumnName("ExitPrice");
-
-                            b1.HasKey("TradeId");
-
-                            b1.ToTable("Trades");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TradeId");
-                        });
-
-                    b.OwnsOne("ARABAZON.TradeAI.Domain.ValueObjects.Money", "ProfitLoss", b1 =>
-                        {
-                            b1.Property<Guid>("TradeId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<decimal>("Amount")
-                                .HasPrecision(18, 2)
-                                .HasColumnType("numeric(18,2)")
-                                .HasColumnName("ProfitLossAmount");
-
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("character varying(3)")
-                                .HasColumnName("ProfitLossCurrency");
 
                             b1.HasKey("TradeId");
 
@@ -767,6 +554,30 @@ namespace ARABAZON.TradeAI.Persistence.Migrations
                                 .HasForeignKey("TradeId");
                         });
 
+                    b.OwnsOne("ARABAZON.TradeAI.Domain.ValueObjects.Money", "ProfitLoss", b1 =>
+                        {
+                            b1.Property<Guid>("TradeId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("ProfitLossAmount");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("ProfitLossCurrency");
+
+                            b1.HasKey("TradeId");
+
+                            b1.ToTable("Trades");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TradeId");
+                        });
+
                     b.Navigation("EntryPrice")
                         .IsRequired();
 
@@ -779,50 +590,6 @@ namespace ARABAZON.TradeAI.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("TakeProfit")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ARABAZON.TradeAI.Domain.Entities.TradeExecution", b =>
-                {
-                    b.OwnsOne("ARABAZON.TradeAI.Domain.ValueObjects.Price", "ExecutedPrice", b1 =>
-                        {
-                            b1.Property<Guid>("TradeExecutionId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<decimal>("Value")
-                                .HasPrecision(18, 5)
-                                .HasColumnType("numeric(18,5)")
-                                .HasColumnName("ExecutedPrice");
-
-                            b1.HasKey("TradeExecutionId");
-
-                            b1.ToTable("TradeExecutions");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TradeExecutionId");
-                        });
-
-                    b.OwnsOne("ARABAZON.TradeAI.Domain.ValueObjects.Price", "RequestedPrice", b1 =>
-                        {
-                            b1.Property<Guid>("TradeExecutionId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<decimal>("Value")
-                                .HasPrecision(18, 5)
-                                .HasColumnType("numeric(18,5)")
-                                .HasColumnName("RequestedPrice");
-
-                            b1.HasKey("TradeExecutionId");
-
-                            b1.ToTable("TradeExecutions");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TradeExecutionId");
-                        });
-
-                    b.Navigation("ExecutedPrice");
-
-                    b.Navigation("RequestedPrice")
                         .IsRequired();
                 });
 
